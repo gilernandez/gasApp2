@@ -1,0 +1,21 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title class="title">{{ questions[selected].pregunta }}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-list>
+      <ion-item *ngFor="let r of questions[selected].respuestas">
+        <ion-label>{{ r }}</ion-label>
+      </ion-item>
+    </ion-list>
+    <ion-item>
+      <ion-button expand="block" color="success" (click)="next()">
+        <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+        {{ textoBtn.msg }}
+      </ion-button>
+    </ion-item>
+  </ion-card-content>
+  <p>selected: {{ selected }}</p>
+  <p>length: {{ questionsLength }}</p>
+</ion-card>
