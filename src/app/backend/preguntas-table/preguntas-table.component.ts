@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FirestoreService } from '../../services/firestore.service';
 import { Pregunta } from '../../models';
-import { MenuController } from '@ionic/angular';
+import { MenuController, ModalController } from '@ionic/angular';
 
 import { IonReorderGroup } from '@ionic/angular';
 import { ItemReorderEventDetail } from '@ionic/core';
@@ -11,8 +11,7 @@ import { LoadingController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
-
-
+import { ModalPage } from '../modal/modal.component';
 @Component({
   selector: 'app-preguntas-table',
   templateUrl: './preguntas-table.component.html',
@@ -24,7 +23,7 @@ export class PreguntasTableComponent implements OnInit {
   title: 'Campaña Uno';
   preguntas: Pregunta[];
   loading: any;
-
+  modal: any;
 
   constructor(
     public menucontroler: MenuController,
@@ -33,8 +32,23 @@ export class PreguntasTableComponent implements OnInit {
     private router: Router,
     public toast: ToastController,
     public alertController: AlertController,
-    private auth: AuthService
+    private auth: AuthService,
+    public modalController: ModalController
   ) { }
+
+  async presentModal(question: Pregunta) {
+    this.modal = await this.modalController.create({
+      component: ModalPage,
+      cssClass: ['../modal/modal.component.scss'],
+      swipeToClose: true,
+      componentProps: {
+        firstName: 'Douglas',
+        lastName: 'Adams',
+        middleInitial: 'N'
+      }
+    });
+    return await this.modal.present();
+  }
 
   async presentLoading() {
     this.loading = await this.loadingController.create({

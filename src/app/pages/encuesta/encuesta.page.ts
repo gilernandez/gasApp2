@@ -12,16 +12,32 @@ import { PreguntaComponent } from './pregunta-card/pregunta.component';
 })
 export class EncuestaPage implements OnInit {
   @ViewChild('ref', { read: PreguntaComponent })
+
   ref: PreguntaComponent;
+  loading: any;
 
   user: string;
   isAdmin: boolean;
+  questionsLength = 0;
+  progress = 0;
+
   constructor(
     public menucontroler: MenuController,
     public loadingController: LoadingController,
     private auth: AuthService,
     public router: Router
   ) { }
+
+  async presentLoading(css?: string, message?: string, duration?: number) {
+    this.loading = await this.loadingController.create({
+      cssClass: css ? css : 'success',
+      message: message ? message : 'Please wait...',
+      duration: duration ? duration : 1500
+    });
+    await this.loading.present();
+
+    const { role, data } = await this.loading.onDidDismiss();
+  }
 
   ngOnInit() {
     this.isLoggedIn();
@@ -49,6 +65,15 @@ export class EncuestaPage implements OnInit {
   }
   nextQuote(event) {
     this.ref.next();
+  }
+  questLength(e: number): void {
+    const no = Number(e);
+    this.questionsLength = no;
+  }
+  indexQuestion(e: any): void {
+    console.log('progress');
+    console.log(e);
+    this.progress = e;
   }
 
 }

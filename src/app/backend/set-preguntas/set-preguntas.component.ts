@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, Renderer2 } from '@angula
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { MenuController } from '@ionic/angular';
 import { FirestoreService } from '../../services/firestore.service';
+import { StorageService } from '../../services/storage.service';
 import { Pregunta, Users } from '../../models';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -25,9 +26,10 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
     pregunta: '',
     respuestas: this.pregunta.r,
     fecha: new Date(),
-    foto: '',
+    foto: null,
     order: null,
-    id: this.pregunta.id
+    id: this.pregunta.id,
+    intro: ''
   };
   title = {
     edit: 'Editar pregunta',
@@ -42,6 +44,7 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
     public menucontroler: MenuController,
     private _fb: FormBuilder,
     public db: FirestoreService,
+    private storage: StorageService,
     private element: ElementRef,
     private renderer: Renderer2,
     private activatedRoute: ActivatedRoute,
@@ -88,6 +91,7 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
       this.data.id = (this.data.id) ? this.data.id : this.pregunta.id;
       this.data.order = this.data.order ? this.data.order : this.data.order = null;
       this.data.fecha = new Date();
+      this.data.intro = this.data.intro ? this.data.intro : 'Lee la sig. pregunta al encuestado.';
 
       // eslint-disable-next-line max-len
       this.db[(false === !!this.preguntaId) ? 'createPregunta' : 'updateDoc'](this.data, 'preguntas/', this.data.id).then(this.router.navigate(['admin/']));
@@ -110,7 +114,6 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
   }
 
   uploadFile(e) {
-    console.log(e);
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (image => {
@@ -118,9 +121,14 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
       });
       reader.readAsDataURL(e.target.files[0]);
     }
+    const file = e.target.files[0];
+    const preguntaId = false === !!this.preguntaId ? this.pregunta.id : this.preguntaId;
+    const name = e.target.files[0].name;
+    this.storage.fileUpload(file, preguntaId, name).then(res => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      (false === !!this.data.foto) ? this.data.foto = [res] : this.data.foto.push(res);
+    });
   }
-
-
 
   private look4responses() {
     this.respuestas = this.element.nativeElement.getElementsByClassName('respuesta');

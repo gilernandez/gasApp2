@@ -13,6 +13,25 @@
 <ion-content>
   <ion-card>
     <ion-card-content>
+      <!-- <ion-item *ngIf="newImage">
+        <ion-img [src]="newImage"></ion-img>
+        <ion-buttons slot="end">
+          <ion-button class="small m-0 p-0" (click)="this.newImage = ''">
+            <ion-icon name="close-circle" slot="icon-only"></ion-icon
+          ></ion-button>
+        </ion-buttons>
+      </ion-item> -->
+
+      <ion-item>
+        <ion-label class="text" position="floating"> Intro / Instrucciones: </ion-label>
+        <ion-input
+          class="text"
+          type="string"
+          inputmode="text"
+          placeholder="Texto previo a la pregunta"
+          [(ngModel)]="data.intro"
+        ></ion-input>
+      </ion-item>
       <ion-item>
         <ion-label class="text" position="floating"> Pregunta: </ion-label>
         <ion-input
@@ -25,10 +44,11 @@
       </ion-item>
       <ion-item *ngFor="let r of data.respuestas; index as i">
         <ion-buttons slot="end">
-          <ion-button (click)="deleteRespuesta(i)" class="small m-0 p-0">
+          <ion-button (click)="deleteRespuesta(i)" class="m-0 p-0">
             <ion-icon name="trash-outline" slot="icon-only"></ion-icon
           ></ion-button>
         </ion-buttons>
+        <ion-avatar slot="start" *ngIf="data.foto && data.foto.length > 1"> <img [src]="data.foto[i]" /> </ion-avatar>
         <ion-label position="stacked"> Resp. {{ i + 1 }}: </ion-label>
         <ion-input
           class="text respuesta"
@@ -52,6 +72,5 @@
 
       <ion-button expand="block" color="primary" class="m-3" (click)="savePregunta()">Guardar Pregunta</ion-button>
     </ion-card-content>
-    <ion-img [src]="newImage"></ion-img>
   </ion-card>
 </ion-content>

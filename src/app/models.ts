@@ -2,9 +2,10 @@ export interface Pregunta {
   pregunta: string;
   respuestas: string[];
   fecha: Date;
-  foto: string;
+  foto: string[];
   order: number;
   id: string;
+  intro?: string;
 }
 
 export interface Users {

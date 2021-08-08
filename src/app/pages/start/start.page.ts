@@ -41,11 +41,11 @@ export class StartPage implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.upload.message = this.upload.initMsg;
     this.presentLoading();
   }
   ngAfterViewInit() {
     this.isLoggedIn();
+    this.upload.message = this.upload.initMsg;
   }
 
   getUser() {

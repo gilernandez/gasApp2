@@ -29,6 +29,7 @@ export class LoginPage implements OnInit, AfterViewInit {
     if (this.key && this.key.length >= 6) {
       this.auth.login(this.key).then(
         resp => {
+          this.key = null;
           this.router.navigate([`home/`]);
         }
       ).catch(err => {

@@ -10,7 +10,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen class="ion-padding gray"> <app-pregunta #ref></app-pregunta> </ion-content>
+<ion-content fullscreen class="gray">
+  <header class="subHeader">hola mundo</header>
+  <app-pregunta #ref (questionIndex)="indexQuestion($event)" (qlength)="questLength($event)"> </app-pregunta>
+</ion-content>
 
 <ion-footer>
   <ion-toolbar>
