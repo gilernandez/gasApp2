@@ -20,6 +20,7 @@ export class EncuestaPage implements OnInit {
   isAdmin: boolean;
   questionsLength = 0;
   progress = 0;
+  lectura: string;
 
   constructor(
     public menucontroler: MenuController,
@@ -41,6 +42,7 @@ export class EncuestaPage implements OnInit {
 
   ngOnInit() {
     this.isLoggedIn();
+    this.lectura = 'Gracias por permitirme hacerle esta pequeña encuesta.';
   }
 
   openMenu() {
@@ -74,6 +76,15 @@ export class EncuestaPage implements OnInit {
     console.log('progress');
     console.log(e);
     this.progress = e;
+  }
+  setMensaje(e: string){
+    this.lectura = e;
+  }
+  getBack(){
+    this.ref.next('back');
+  }
+  goHome(){
+    this.router.navigate([`home/`]);
   }
 
 }

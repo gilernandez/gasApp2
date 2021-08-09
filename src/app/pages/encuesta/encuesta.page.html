@@ -1,8 +1,10 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-title class="subTitle">Encuesta</ion-title>
-    <ion-buttons slot="start" *ngIf="isAdmin">
-      <ion-button (click)="openMenu()"> <ion-icon name="menu-outline" color="dark" slot="icon-only"></ion-icon> </ion-button>
+    <ion-buttons slot="start">
+      <ion-button (click) = "getBack()" *ngIf="progress > 0"><ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon></ion-button>
+      <ion-button (click) = "goHome()"> <ion-icon name="home-outline" slot="end"></ion-icon> </ion-button>
+      <ion-button *ngIf="isAdmin" (click)="openMenu()"> <ion-icon name="menu-outline" color="dark" slot="icon-only"></ion-icon> </ion-button>
     </ion-buttons>
     <ion-button slot="end" color="dark" (click)="logOut()">
       <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
@@ -11,8 +13,19 @@
 </ion-header>
 
 <ion-content fullscreen class="gray">
-  <header class="subHeader">hola mundo</header>
-  <app-pregunta #ref (questionIndex)="indexQuestion($event)" (qlength)="questLength($event)"> </app-pregunta>
+  <header class="subHeader white">
+    <ion-item>
+      <ion-label class="ion-text-wrap">{{lectura}}</ion-label>
+    </ion-item>
+  </header>
+  <app-pregunta
+    #ref
+    (questionIndex)="indexQuestion($event)"
+    (qlength)="questLength($event)"
+    (mensaje) = "setMensaje($event)">
+  </app-pregunta>
+  <p>selected: {{ progress }}</p>
+  <p>length: {{ questionsLength }}</p>
 </ion-content>
 
 <ion-footer>

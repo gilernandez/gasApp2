@@ -1,12 +1,9 @@
 <ion-card *ngIf="ready">
   <ion-item>
-    <!-- <ion-label position="floating"> Preguntas: </ion-label>
-    <ion-badge slot="end">{{ selected }}</ion-badge>
-    <ion-progress-bar color="primary" [value]="progress"></ion-progress-bar>
     <ion-range min="0" [max]="questionsLength" step="1" [value]="selected" snaps color="success" disabled>
       <ion-icon slot="start" size="small" color="dark" name="chevron-forward-circle"></ion-icon>
       <ion-icon slot="end" color="dark" name="checkmark-done"></ion-icon>
-    </ion-range> -->
+    </ion-range>
   </ion-item>
   <ion-card-header>
     <ion-card-title class="title text-center">{{ questions[selected].pregunta }}</ion-card-title>
@@ -14,9 +11,12 @@
 
   <ion-card-content>
     <ion-list>
-      <ion-radio-group (ionChange)="respuestaSelected($event)">
+      <ion-radio-group #preguntas (ionChange)="radioSelect($event)" >
         <ion-list-header> <ion-label>Selecciona una respuesta</ion-label> </ion-list-header>
-        <ion-item *ngFor="let r of questions[selected].respuestas; let i = index" class="pregunta item-text-wra" expandable>
+        <ion-item 
+          *ngFor="let r of questions[selected].respuestas; let i = index"
+          class="pregunta item-text-wra"
+          expandable>
           <ion-thumbnail slot="end" *ngIf="questions[selected].foto && questions[selected].foto.length >= 2">
             <ion-img [src]="questions[selected].foto[i]"></ion-img>
           </ion-thumbnail>
@@ -26,12 +26,10 @@
       </ion-radio-group>
     </ion-list>
     <ion-item>
-      <ion-button expand="block" color="success" (click)="next()">
+      <ion-button expand="block" color="success" (click)="next()" [disabled]="isButtonDisabled">
         <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
         {{ textoBtn.msg }}
       </ion-button>
     </ion-item>
   </ion-card-content>
-  <p>selected: {{ selected }}</p>
-  <p>length: {{ questionsLength }}</p>
 </ion-card>

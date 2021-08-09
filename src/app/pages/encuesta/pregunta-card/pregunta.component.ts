@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FirestoreService } from '../../../services/firestore.service';
 import { Pregunta } from '../../../models';
@@ -11,9 +11,10 @@ import { LoadingController } from '@ionic/angular';
 
 })
 export class PreguntaComponent implements OnInit, AfterViewInit {
-
+  @ViewChild('preguntas') pregunta;
   @Output() questionIndex = new EventEmitter<number>();
   @Output() qlength = new EventEmitter<number>();
+  @Output() mensaje = new EventEmitter<string>();
 
   loading: any;
   ready = false;
@@ -33,9 +34,12 @@ export class PreguntaComponent implements OnInit, AfterViewInit {
     init: 'Siguente Pregunta',
     end: 'Finalizar Encuesta'
   };
+  encuestadoId:string;
   questionsLength: number;
   selected = 0;
 
+  isButtonDisabled: boolean;
+  
 
   constructor(
     public router: Router,
@@ -44,6 +48,8 @@ export class PreguntaComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
+    //this.isButtonDisabled = true;
+    this.encuestadoId = this.db.getId();
     this.presentLoading('', 'Cargando...', 10000);
     this.db.getCollection<Pregunta>('preguntas').subscribe(
       res => {
@@ -53,11 +59,13 @@ export class PreguntaComponent implements OnInit, AfterViewInit {
         this.textoBtn.msg = this.textoBtn.init;
         this.qlength.emit(qlength);
         this.ready = true;
+
         this.loading.dismiss();
       }
     );
   }
   ngAfterViewInit() {
+    this.isButtonDisabled = true;
   }
 
   async presentLoading(css?: string, message?: string, duration?: number) {
@@ -70,22 +78,49 @@ export class PreguntaComponent implements OnInit, AfterViewInit {
 
     const { role, data } = await this.loading.onDidDismiss();
   }
-  next() {
-    if (this.selected < this.questionsLength) {
-      this.selected += 1;
-      if (this.selected === this.questionsLength) {
-        this.textoBtn.msg = this.textoBtn.end;
-      }
+  next(back?:string) {
+    this.pregunta.value = null;
+    this.isButtonDisabled = false;
+    if(back){
+      this.selected --;
       this.questionIndex.emit(this.selected);
-    } else {
       this.textoBtn.msg = this.textoBtn.init;
-      this.selected = 0;
-      this.router.navigate([`home/`]);
-      return;
+      this.mensaje.emit(this.questions[this.selected].intro);
+    }else{
+      if (this.selected < this.questionsLength) {
+        this.selected += 1;
+        if (this.selected === this.questionsLength) {
+          this.textoBtn.msg = this.textoBtn.end;
+        }
+        this.questionIndex.emit(this.selected);
+        this.mensaje.emit(this.questions[this.selected].intro);
+      } else {
+        this.textoBtn.msg = this.textoBtn.init;
+        this.selected = 0;
+        this.router.navigate([`home/`]);
+        return;
+      }
     }
   }
 
-  respuestaSelected(e): void {
-    console.log(e.detail.value);
+  radioSelect(e: any){
+    this.isButtonDisabled = false;
+    const preguntaId = this.questions[this.selected].id; 
+    const encuestadoId = this.encuestadoId;
+    const respuestaSelected = e.detail;
+
+    const respuesta = {
+      [encuestadoId] : {
+        encuestado: encuestadoId,
+        preguntaId: preguntaId,
+        respuesta: respuestaSelected
+      }
+    }
+    
+    this.db.createPregunta(respuesta, `respuestas/${preguntaId}/encuestados`, encuestadoId);
   }
+  /*respuestaSelected(e): void {
+    console.log(e.detail);
+    console.log(e.detail.value);
+  }*/
 }

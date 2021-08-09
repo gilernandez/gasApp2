@@ -43,5 +43,30 @@ export class FirestoreService {
     return collection.doc(id).valueChanges();
   }
 
+  setRespuestas(data: any, id:string){
+    console.log(data.respuestas);
+
+    for(const i in data.respuestas){
+      console.log(data.respuestas[i]);
+    }
+
+    /*
+    const collection = this.db.collection('respuestas/');
+    return collection.doc(id).set(data);
+    */
+  }
+  updateRespuestas(data:any, id:string){
+    const collection = this.db.collection('respuestas/');
+    return collection.doc(id).update(data);
+  }
+  deleteRespuesta(id:string){
+    const collection = this.db.collection('respuestas/');
+    return collection.doc(id).delete();
+  }
+  getRespuestas(id: string){
+    const collection = this.db.collection('respuestas');
+    return collection.valueChanges();
+  }
+
 }
 //

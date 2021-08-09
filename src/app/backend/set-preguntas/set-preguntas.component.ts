@@ -29,7 +29,9 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
     foto: null,
     order: null,
     id: this.pregunta.id,
-    intro: ''
+    intro: '',
+    tipoPregunta : null,
+    videoURL: 'https://youtu.be/wJjKwH3-9Ro'
   };
   title = {
     edit: 'Editar pregunta',
@@ -39,6 +41,8 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
   respuestas: any;
   hasRespuestas: boolean;
   newImage: string;
+  fotos: number;
+
 
   constructor(
     public menucontroler: MenuController,
@@ -62,6 +66,7 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
       } else {
         this.db.getDoc<Pregunta>('preguntas/', this.preguntaId).subscribe(resp => {
           this.data = resp;
+          this.fotos = resp.foto.length;
         });
       }
     });
@@ -92,9 +97,14 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
       this.data.order = this.data.order ? this.data.order : this.data.order = null;
       this.data.fecha = new Date();
       this.data.intro = this.data.intro ? this.data.intro : 'Lee la sig. pregunta al encuestado.';
-
+      
       // eslint-disable-next-line max-len
-      this.db[(false === !!this.preguntaId) ? 'createPregunta' : 'updateDoc'](this.data, 'preguntas/', this.data.id).then(this.router.navigate(['admin/']));
+      this.db[(false === !!this.preguntaId) ? 'createPregunta' : 'updateDoc'](this.data, 'preguntas/', this.data.id).then( res => {
+        console.log(res);
+        this.db.setRespuestas(this.data, this.data.id);
+        return;
+        this.router.navigate(['admin/']);
+      });
     }
   }
 
@@ -128,6 +138,10 @@ export class SetPreguntasComponent implements OnInit, AfterViewInit {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       (false === !!this.data.foto) ? this.data.foto = [res] : this.data.foto.push(res);
     });
+  }
+
+  holaTipo(tipo: string){
+    this.data.tipoPregunta = tipo;
   }
 
   private look4responses() {

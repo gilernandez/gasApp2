@@ -6,6 +6,8 @@ export interface Pregunta {
   order: number;
   id: string;
   intro?: string;
+  tipoPregunta?: string;
+  videoURL?: string;
 }
 
 export interface Users {

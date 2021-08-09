@@ -13,24 +13,36 @@
 <ion-content>
   <ion-card>
     <ion-card-content>
-      <!-- <ion-item *ngIf="newImage">
-        <ion-img [src]="newImage"></ion-img>
-        <ion-buttons slot="end">
-          <ion-button class="small m-0 p-0" (click)="this.newImage = ''">
-            <ion-icon name="close-circle" slot="icon-only"></ion-icon
-          ></ion-button>
-        </ion-buttons>
-      </ion-item> -->
-
-      <ion-item>
-        <ion-label class="text" position="floating"> Intro / Instrucciones: </ion-label>
+      <ion-toolbar>
+        <ion-item>
+          <ion-label position="floating">Tipo de Pregunta</ion-label>
+          <ion-select [(ngModel)]="data.tipoPregunta"  ok-text="Okay" cancel-text="Nah" #tipo>
+            <ion-select-option value="opcionMultiple">OpcionMultiple</ion-select-option>
+            <ion-select-option value="formulario">Formulario</ion-select-option>
+            <ion-select-option value="video">Video</ion-select-option>
+            <ion-select-option value="audio">Audio</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-toolbar>
+      <ion-item *ngIf="data.tipoPregunta === 'video'">
+        <ion-label class="text" position="floating"> Video URL: </ion-label>
         <ion-input
           class="text"
           type="string"
           inputmode="text"
-          placeholder="Texto previo a la pregunta"
-          [(ngModel)]="data.intro"
-        ></ion-input>
+          placeholder="URL del video"
+          [(ngModel)]="data.videoURL" >
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="text" position="floating"> Intro / Instrucciones: </ion-label>
+        <ion-input
+            class="text"
+            type="string"
+            inputmode="text"
+            placeholder="Texto previo a la pregunta"
+            [(ngModel)]="data.intro">
+        </ion-input>
       </ion-item>
       <ion-item>
         <ion-label class="text" position="floating"> Pregunta: </ion-label>
@@ -63,7 +75,7 @@
       </ion-item>
 
       <ion-item>
-        <ion-label> Foto: </ion-label>
+        <ion-label> Fotos: <ion-badge slot="end" color="dark">{{fotos}}</ion-badge></ion-label>
         <ion-button slot="end" class="m-0 p-0" shape="round" fill="clear" size="large">
           <label for="input"> <ion-icon slot="icon-only" name="images-outline" color="dark"></ion-icon> </label>
           <input id="input" type="file" class="d-none" (change)="uploadFile($event)" />
